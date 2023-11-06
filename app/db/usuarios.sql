@@ -1,14 +1,13 @@
 -- phpMyAdmin SQL Dump
--- version 4.8.5
+-- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Servidor: localhost
--- Tiempo de generación: 23-03-2021 a las 21:21:28
--- Versión del servidor: 8.0.13-4
--- Versión de PHP: 7.2.24-0ubuntu0.18.04.7
+-- Servidor: 127.0.0.1
+-- Tiempo de generación: 06-11-2023 a las 21:05:15
+-- Versión del servidor: 10.4.28-MariaDB
+-- Versión de PHP: 8.0.28
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-SET AUTOCOMMIT = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
 
@@ -19,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Base de datos: `pqElWX5WY2`
+-- Base de datos: `la_comanda`
 --
 
 -- --------------------------------------------------------
@@ -29,20 +28,21 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `usuarios` (
-  `id` int(11) NOT NULL,
-  `usuario` varchar(250) COLLATE utf8_unicode_ci NOT NULL,
-  `clave` varchar(250) COLLATE utf8_unicode_ci NOT NULL,
-  `fechaBaja` date DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+  `sueldo` float DEFAULT NULL,
+  `sector` varchar(200) CHARACTER SET latin1 COLLATE latin1_general_ci DEFAULT NULL,
+  `fechaIngreso` date DEFAULT NULL,
+  `nombreUsuario` varchar(200) CHARACTER SET latin1 COLLATE latin1_general_ci DEFAULT NULL,
+  `idProducto` bigint(20) DEFAULT NULL,
+  `idUsuario` bigint(20) UNSIGNED NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `usuarios`
 --
 
-INSERT INTO `usuarios` (`id`, `usuario`, `clave`, `fechaBaja`) VALUES
-(1, 'franco', 'Hsu23sDsjseWs', NULL),
-(2, 'pedro', 'dasdqsdw2sd23', NULL),
-(3, 'jorge', 'sda2s2f332f2', NULL);
+INSERT INTO `usuarios` (`sueldo`, `sector`, `fechaIngreso`, `nombreUsuario`, `idProducto`, `idUsuario`) VALUES
+(900, 'cocinero', '2023-11-06', 'Lucas Ramos', NULL, 5),
+(700, 'mozo', '2023-11-06', 'Pedro Rodriguez', NULL, 6);
 
 --
 -- Índices para tablas volcadas
@@ -52,7 +52,7 @@ INSERT INTO `usuarios` (`id`, `usuario`, `clave`, `fechaBaja`) VALUES
 -- Indices de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`idUsuario`);
 
 --
 -- AUTO_INCREMENT de las tablas volcadas
@@ -62,7 +62,7 @@ ALTER TABLE `usuarios`
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `idUsuario` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
