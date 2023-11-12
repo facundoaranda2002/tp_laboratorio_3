@@ -52,35 +52,36 @@ class UsuarioController extends Usuario implements IApiUsable
           ->withHeader('Content-Type', 'application/json');
     }
 
-    public function ModificarUno($request, $response, $args)
+    public function ModificarUno($request, $response, $args) // PUT  sueldo nombreUsuario sector fechaIngreso idProducto
     {
-      /*
         $parametros = $request->getParsedBody();
 
-        $nombre = $parametros['nombre'];
-        Usuario::modificarUsuario($nombre);
+        $sueldo = $parametros['sueldo'];
+        $nombreUsuario = $parametros['nombreUsuario'];
+        $sector = $parametros['sector'];
+        $fechaIngreso = $parametros['fechaIngreso'];
+        $idProducto = $parametros['idProducto'];
+        $idUsuario = $args['idUsuario'];
+
+        Usuario::modificarUsuario($sueldo, $sector, $fechaIngreso, $nombreUsuario, $idProducto, $idUsuario);
 
         $payload = json_encode(array("mensaje" => "Usuario modificado con exito"));
 
         $response->getBody()->write($payload);
         return $response
           ->withHeader('Content-Type', 'application/json');
-          */
     }
 
-    public function BorrarUno($request, $response, $args)
+    public function BorrarUno($request, $response, $args) // DELETE idUsuario
     {
-      /*
-        $parametros = $request->getParsedBody();
 
-        $usuarioId = $parametros['usuarioId'];
-        Usuario::borrarUsuario($usuarioId);
+        $idUsuario = $args['idUsuario'];
+        Usuario::borrarUsuario($idUsuario);
 
         $payload = json_encode(array("mensaje" => "Usuario borrado con exito"));
 
         $response->getBody()->write($payload);
         return $response
           ->withHeader('Content-Type', 'application/json');
-        */
     }
 }

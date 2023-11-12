@@ -54,33 +54,50 @@ class ProductoController extends Producto implements IApiUsable
 
     public function ModificarUno($request, $response, $args)
     {
-      /*
         $parametros = $request->getParsedBody();
+        
 
+        $estado = $parametros['estado'];
+        $tiempo = $parametros['tiempo'];
+        $tipo = $parametros['tipo'];
         $nombre = $parametros['nombre'];
-        Usuario::modificarUsuario($nombre);
+        $clavePedido = $parametros['clavePedido'];
+        $idProducto = $parametros['idProducto'];
 
-        $payload = json_encode(array("mensaje" => "Usuario modificado con exito"));
+        Producto::modificarProducto($estado, $tiempo, $tipo, $nombre, $clavePedido, $idProducto);
+
+        $payload = json_encode(array("mensaje" => "Producto Modificado con exito"));
 
         $response->getBody()->write($payload);
         return $response
           ->withHeader('Content-Type', 'application/json');
-          */
+    }
+
+    public function ModificarEstado($request, $response, $args) // PUT  estado idProducto
+    {
+        $parametros = $request->getParsedBody();
+
+        $estado = $parametros['estado'];
+        $idProducto = $parametros['idProducto'];
+
+        Producto::modificarEstadoDelProducto($estado, $idProducto);
+
+        $payload = json_encode(array("mensaje" => "El estado del producto fue modificado con exito"));
+
+        $response->getBody()->write($payload);
+        return $response
+          ->withHeader('Content-Type', 'application/json');
     }
 
     public function BorrarUno($request, $response, $args)
     {
-      /*
-        $parametros = $request->getParsedBody();
+        $idProducto = $args['idProducto'];
+        Producto::borrarProducto($idProducto);
 
-        $usuarioId = $parametros['usuarioId'];
-        Usuario::borrarUsuario($usuarioId);
-
-        $payload = json_encode(array("mensaje" => "Usuario borrado con exito"));
+        $payload = json_encode(array("mensaje" => "Producto borrado con exito"));
 
         $response->getBody()->write($payload);
         return $response
           ->withHeader('Content-Type', 'application/json');
-        */
     }
 }

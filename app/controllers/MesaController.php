@@ -44,35 +44,32 @@ class MesaController extends Mesa implements IApiUsable
           ->withHeader('Content-Type', 'application/json');
     }
 
-    public function ModificarUno($request, $response, $args)
+    public function ModificarUno($request, $response, $args)//PUT Estado
     {
-      /*
-        $parametros = $request->getParsedBody();
+      $parametros = $request->getParsedBody();
 
-        $nombre = $parametros['nombre'];
-        Usuario::modificarUsuario($nombre);
+      $idMesa = $args['idMesa']; 
+      $estado = $parametros['estado'];
 
-        $payload = json_encode(array("mensaje" => "Usuario modificado con exito"));
+      Mesa::modificarMesa($idMesa, $estado);
 
-        $response->getBody()->write($payload);
-        return $response
-          ->withHeader('Content-Type', 'application/json');
-          */
+      $payload = json_encode(array("mensaje" => "Mesa modificada con exito"));
+
+      $response->getBody()->write($payload);
+      return $response
+        ->withHeader('Content-Type', 'application/json');
     }
 
-    public function BorrarUno($request, $response, $args)
+    public function BorrarUno($request, $response, $args) // DELETE idMesa
     {
-      /*
-        $parametros = $request->getParsedBody();
 
-        $usuarioId = $parametros['usuarioId'];
-        Usuario::borrarUsuario($usuarioId);
+        $idMesa = $args['idMesa'];
+        Mesa::borrarMesa($idMesa);
 
-        $payload = json_encode(array("mensaje" => "Usuario borrado con exito"));
+        $payload = json_encode(array("mensaje" => "Mesa borrada con exito"));
 
         $response->getBody()->write($payload);
         return $response
           ->withHeader('Content-Type', 'application/json');
-        */
     }
 }

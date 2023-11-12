@@ -33,6 +33,16 @@ class Producto
         return $consulta->fetchAll(PDO::FETCH_CLASS, 'Producto');
     }
 
+    public static function obtenerTodosPorClave($clavePedido)
+    {
+        $objAccesoDatos = AccesoDatos::obtenerInstancia();
+        $consulta = $objAccesoDatos->prepararConsulta("SELECT estado, tiempo, tipo, nombre, idProducto, clavePedido FROM productos WHERE clavePedido = :clavePedido");
+        $consulta->bindValue(':clavePedido', $clavePedido, PDO::PARAM_INT);
+        $consulta->execute();
+
+        return $consulta->fetchAll(PDO::FETCH_CLASS, 'Producto');
+    }
+
     public static function obtenerProducto($idProducto)
     {
         $objAccesoDatos = AccesoDatos::obtenerInstancia();
@@ -42,7 +52,7 @@ class Producto
         return $consulta->fetchObject('Producto');
     }
 
-    public static function modificarProducto($estado, $tiempo, $tipo, $nombre, $idProducto, $clavePedido)
+    public static function modificarProducto($estado, $tiempo, $tipo, $nombre, $clavePedido, $idProducto)
     {
         $objAccesoDato = AccesoDatos::obtenerInstancia();
         $consulta = $objAccesoDato->prepararConsulta("UPDATE productos SET estado = :estado, tiempo = :tiempo, tipo = :tipo, nombre = :nombre, clavePedido = :clavePedido WHERE idProducto = :idProducto");
@@ -50,8 +60,8 @@ class Producto
         $consulta->bindValue(':tiempo', $tiempo, PDO::PARAM_INT);
         $consulta->bindValue(':tipo', $tipo, PDO::PARAM_STR);
         $consulta->bindValue(':nombre', $nombre, PDO::PARAM_STR);
-        $consulta->bindValue(':idProducto', $idProducto, PDO::PARAM_INT);
         $consulta->bindValue(':clavePedido', $clavePedido, PDO::PARAM_STR);
+        $consulta->bindValue(':idProducto', $idProducto, PDO::PARAM_INT);
         $consulta->execute();
     }
 
@@ -59,6 +69,15 @@ class Producto
     {
         $objAccesoDato = AccesoDatos::obtenerInstancia();
         $consulta = $objAccesoDato->prepararConsulta("DELETE FROM productos WHERE idProducto = :idProducto");
+        $consulta->bindValue(':idProducto', $idProducto, PDO::PARAM_INT);
+        $consulta->execute();
+    }
+
+    public static function modificarEstadoDelProducto($estado, $idProducto)
+    {
+        $objAccesoDato = AccesoDatos::obtenerInstancia();
+        $consulta = $objAccesoDato->prepararConsulta("UPDATE productos SET estado = :estado WHERE idProducto = :idProducto");
+        $consulta->bindValue(':estado', $estado, PDO::PARAM_STR);
         $consulta->bindValue(':idProducto', $idProducto, PDO::PARAM_INT);
         $consulta->execute();
     }

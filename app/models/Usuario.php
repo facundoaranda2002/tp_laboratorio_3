@@ -46,12 +46,12 @@ class Usuario
         return $consulta->fetchObject('Usuario');
     }
 
-    public static function modificarUsuario($sueldo, $sector, $fechaIngreso, $nombreUsuario, $idProducto,$idUsuario)
+    public static function modificarUsuario($sueldo, $sector, $fechaIngreso, $nombreUsuario, $idProducto, $idUsuario)
     {
         $objAccesoDato = AccesoDatos::obtenerInstancia();
-        $consulta = $objAccesoDato->prepararConsulta("UPDATE usuarios SET sueldo = :sueldo, sector = :sector, fechaIngreso = :fechaIngreso, nombreUsuario = :nombreUsuario, idProducto = :idProducto WHERE idUsuario = :idProducto");
+        $consulta = $objAccesoDato->prepararConsulta("UPDATE usuarios SET sueldo = :sueldo, sector = :sector, fechaIngreso = :fechaIngreso, nombreUsuario = :nombreUsuario, idProducto = :idProducto WHERE idUsuario = :idUsuario");
         $consulta->bindValue(':sueldo', $sueldo, PDO::PARAM_STR);
-        $consulta->bindValue(':tiempo', $sector, PDO::PARAM_INT);
+        $consulta->bindValue(':sector', $sector, PDO::PARAM_INT);
         $consulta->bindValue(':fechaIngreso', $fechaIngreso, PDO::PARAM_STR);
         $consulta->bindValue(':nombreUsuario', $nombreUsuario, PDO::PARAM_STR);
         $consulta->bindValue(':idUsuario', $idUsuario, PDO::PARAM_INT);
