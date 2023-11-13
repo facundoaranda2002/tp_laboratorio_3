@@ -26,6 +26,7 @@ require_once './middlewares/LoggerMozo.php';
 require_once './middlewares/ValidarModificarEstadoMesa.php';
 require_once './middlewares/ValidarModificarEstadoProducto.php';
 require_once './middlewares/ValidarModificarEstadoPedido.php';
+require_once './middlewares/ValidarAltaProducto.php';
 
 // Load ENV
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
@@ -63,7 +64,7 @@ $app->group('/Pedido', function (RouteCollectorProxy $group) {
 $app->group('/Producto', function (RouteCollectorProxy $group) {
   $group->get('[/]', \ProductoController::class . ':TraerTodos')->add(new LoggerMozo());
   $group->get('/{idProducto}', \ProductoController::class . ':TraerUno')->add(new LoggerMozo());
-  $group->post('[/]', \ProductoController::class . ':CargarUno')->add(new LoggerMozo());
+  $group->post('[/]', \ProductoController::class . ':CargarUno')->add(new ValidarAltaProducto());
   $group->put('[/]', \ProductoController::class . ':ModificarUno')->add(new LoggerMozo());
   $group->put('/ModificarEstado', \ProductoController::class . ':ModificarEstado')->add(new ValidarModificarEstadoProducto());
   $group->delete('/{idProducto}', \ProductoController::class . ':BorrarUno')->add(new LoggerMozo());
