@@ -8,7 +8,7 @@ class Pedido
     public $nombreCliente ;
     public $precio ;
     public $puntuacion;
-    public $comentarios ;
+    public $comentarios;
     public $clave;
     //public $idPedido ;
     
