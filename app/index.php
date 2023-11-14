@@ -27,7 +27,9 @@ require_once './middlewares/ValidarModificarEstadoMesa.php';
 require_once './middlewares/ValidarAltaProducto.php';
 require_once './middlewares/ValidarModificarProducto.php';
 require_once './middlewares/ValidarModificarEstadoProducto.php';
+require_once './middlewares/ValidarBorrarProducto.php';
 require_once './middlewares/ValidarModificarEstadoPedido.php';
+
 
 
 // Load ENV
@@ -69,7 +71,7 @@ $app->group('/Producto', function (RouteCollectorProxy $group) {
   $group->post('[/]', \ProductoController::class . ':CargarUno')->add(new ValidarAltaProducto());
   $group->put('[/]', \ProductoController::class . ':ModificarUno')->add(new ValidarModificarProducto());
   $group->put('/ModificarEstado', \ProductoController::class . ':ModificarEstado')->add(new ValidarModificarEstadoProducto());
-  $group->delete('/{idProducto}', \ProductoController::class . ':BorrarUno')->add(new LoggerMozo());
+  $group->delete('/{idProducto}', \ProductoController::class . ':BorrarUno')->add(new ValidarBorrarProducto());
 }); 
 
 $app->group('/Usuario', function (RouteCollectorProxy $group) {
