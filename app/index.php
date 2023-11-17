@@ -20,6 +20,7 @@ require_once './controllers/MesaController.php';
 require_once './controllers/PedidoController.php';
 require_once './controllers/ProductoController.php';
 require_once './controllers/UsuarioController.php';
+require_once './controllers/CsvController.php';
 
 require_once './middlewares/AuthMiddleware.php';
 
@@ -100,6 +101,9 @@ $app->group('/Cliente', function (RouteCollectorProxy $group) {
   $group->get('/TraerUno', \PedidoController::class . ':TraerUnoCliente');
 });
 
+$app->group('/Csv', function (RouteCollectorProxy $group) {
+  $group->post('/Guardar', \CsvController::class . ':Guardar');
+});
 
 
 $app->run();

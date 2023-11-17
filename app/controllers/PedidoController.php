@@ -121,38 +121,38 @@ class PedidoController extends Pedido implements IApiUsable
     }
 
     public function TraerTodosSegunEstado($request, $response, $args) // GET estado
-  {
-    $parametrosParam = $request->getQueryParams();
-    $estado = $parametrosParam['estado'];
+    {
+      $parametrosParam = $request->getQueryParams();
+      $estado = $parametrosParam['estado'];
 
-    $lista = Pedido::obtenerTodosSegunEstado($estado);
-    $payload = json_encode(array("listaPedidos" => $lista));
+      $lista = Pedido::obtenerTodosSegunEstado($estado);
+      $payload = json_encode(array("listaPedidos" => $lista));
 
-    $response->getBody()->write($payload);
-    return $response
-      ->withHeader('Content-Type', 'application/json');
-  }
+      $response->getBody()->write($payload);
+      return $response
+        ->withHeader('Content-Type', 'application/json');
+    }
 
     public function ModificarUno($request, $response, $args)
     {
-        $parametros = $request->getParsedBody();
+      $parametros = $request->getParsedBody();
 
-        $idMesa = $parametros['idMesa'];
-        $estado = $parametros['estado'];
-        $nombreCliente = $parametros['nombreCliente'];
-        $precio = $parametros['precio'];
-        $puntuacion = $parametros['puntuacion'];
-        $comentarios = $parametros['comentarios'];
-        $clavePedido = $parametros['clavePedido'];
-        //$idPedido = $parametros['idPedido'];
+      $idMesa = $parametros['idMesa'];
+      $estado = $parametros['estado'];
+      $nombreCliente = $parametros['nombreCliente'];
+      $precio = $parametros['precio'];
+      $puntuacion = $parametros['puntuacion'];
+      $comentarios = $parametros['comentarios'];
+      $clavePedido = $parametros['clavePedido'];
+      //$idPedido = $parametros['idPedido'];
 
-        Pedido::modificarPedido($idMesa, $estado, $nombreCliente, $precio, $puntuacion, $comentarios, $clavePedido);
+      Pedido::modificarPedido($idMesa, $estado, $nombreCliente, $precio, $puntuacion, $comentarios, $clavePedido);
 
-        $payload = json_encode(array("mensaje" => "Pedido Modificado con exito"));
+      $payload = json_encode(array("mensaje" => "Pedido Modificado con exito"));
 
-        $response->getBody()->write($payload);
-        return $response
-          ->withHeader('Content-Type', 'application/json');
+      $response->getBody()->write($payload);
+      return $response
+        ->withHeader('Content-Type', 'application/json');
     }
 
     public function ModificarUnoCliente($request, $response, $args) // PUT :  clavePedido idMesa puntuacion comentarios
@@ -180,18 +180,18 @@ class PedidoController extends Pedido implements IApiUsable
 
     public function ModificarEstado($request, $response, $args) // PUT  estado clavePedido
     {
-        $parametros = $request->getParsedBody();
+      $parametros = $request->getParsedBody();
 
-        $estado = $parametros['estado'];
-        $clavePedido = $parametros['clavePedido'];
+      $estado = $parametros['estado'];
+      $clavePedido = $parametros['clavePedido'];
 
-        Pedido::modificarEstadoDelPedido($estado, $clavePedido);
+      Pedido::modificarEstadoDelPedido($estado, $clavePedido);
 
-        $payload = json_encode(array("mensaje" => "El estado del pedido se modifico con exito"));
+      $payload = json_encode(array("mensaje" => "El estado del pedido se modifico con exito"));
 
-        $response->getBody()->write($payload);
-        return $response
-          ->withHeader('Content-Type', 'application/json');
+      $response->getBody()->write($payload);
+      return $response
+        ->withHeader('Content-Type', 'application/json');
     }
     
     public function SubirFoto($request, $response, $args) // POST : clavePedido + foto
@@ -202,7 +202,7 @@ class PedidoController extends Pedido implements IApiUsable
 
       $pedidoAux = Pedido::obtenerPedido($clavePedido);
 
-      $carpeta_archivos =  "../src/fotos/";
+      $carpeta_archivos =  "src/fotos/";
       $nombre_archivo = $pedidoAux->idMesa . "_" . $pedidoAux->clavePedido . "_" . $pedidoAux->nombreCliente;
       $ruta_destino = $carpeta_archivos . $nombre_archivo . ".jpg";
 

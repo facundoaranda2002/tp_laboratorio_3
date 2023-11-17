@@ -15,6 +15,17 @@ class Mesa
         return $objAccesoDatos->obtenerUltimoId();
     }
 
+    public function crearMesaCSV()
+    {
+        $objAccesoDatos = AccesoDatos::obtenerInstancia();
+        $consulta = $objAccesoDatos->prepararConsulta("INSERT INTO mesas (idMesa, estado) VALUES (:idMesa, :estado)");
+        $consulta->bindValue(':idMesa', $this->idMesa, PDO::PARAM_INT);
+        $consulta->bindValue(':estado', $this->estado, PDO::PARAM_STR);
+        $consulta->execute();
+
+        return $objAccesoDatos->obtenerUltimoId();
+    }
+
     public static function obtenerTodos()
     {
         $objAccesoDatos = AccesoDatos::obtenerInstancia();
