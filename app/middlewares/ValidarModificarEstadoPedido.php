@@ -9,16 +9,18 @@ class ValidarModificarEstadoPedido
     public function __invoke(Request $request, RequestHandler $handler): Response
     {   
         
-        $parametrosParam = $request->getQueryParams();
+        $header = $request->getHeaderLine('Authorization');
+        $token = trim(explode("Bearer", $header)[1]);
+        $data = AutentificadorJWT::ObtenerData($token);
+
         $parametrosBody = $request->getParsedBody();
         
 
-        if(isset($parametrosParam['sector']) && isset($parametrosBody['estado']) && isset($parametrosBody['clave']))
+        if(isset($parametrosBody['estado']) && isset($parametrosBody['clavePedido']))
         {   
-            $sector = $parametrosParam['sector'];
             $estado = $parametrosBody['estado'];
-            $clave = $parametrosBody['clave'];
-            $lista = Producto::obtenerTodosPorClave($clave);
+            $clavePedido = $parametrosBody['clavePedido'];
+            $lista = Producto::obtenerTodosPorClave($clavePedido);
             $pasaValidacion = true;
 
             foreach($lista as $producto)
@@ -42,7 +44,7 @@ class ValidarModificarEstadoPedido
         else
         {
             $response = new Response();
-            $payload = json_encode(array('mensaje' => 'No existe el parametro sector, el estado o la clave del pedido'));
+            $payload = json_encode(array('mensaje' => 'No existe el parametro estado o la clave del pedido'));
             $response->getBody()->write($payload);
         }
 

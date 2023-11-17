@@ -9,31 +9,23 @@ class ValidarModificarEstadoMesa
     public function __invoke(Request $request, RequestHandler $handler): Response
     {   
         
-        $parametrosParam = $request->getQueryParams();
+        $header = $request->getHeaderLine('Authorization');
+        $token = trim(explode("Bearer", $header)[1]);
+        $data = AutentificadorJWT::ObtenerData($token);
+
         $parametrosBody = $request->getParsedBody();
+        $estado = $parametrosBody['estado'];
         
-
-        if(isset($parametrosParam['sector']) && isset($parametrosBody['estado']))
-        {   
-            $sector = $parametrosParam['sector'];
-            $estado = $parametrosBody['estado'];
-
-            if((($estado == "con cliente esperando pedido" || $estado == "con cliente comiendo" || $estado == "con cliente pagando") && $sector === 'mozo') || $sector === 'socio')
-            {
-                $response = $handler->handle($request);
-            } else {
-                $response = new Response();
-                $payload = json_encode(array('mensaje' => 'No estas habilitado para realizar la accion'));
-                $response->getBody()->write($payload);
-            }
-        }
-        else
+        if ((($estado == "con cliente esperando pedido" || $estado == "con cliente comiendo" || $estado == "con cliente pagando") && $data->sector === 'mozo') || $data->sector === 'socio') 
+        {
+            $response = $handler->handle($request);
+        } 
+        else 
         {
             $response = new Response();
-            $payload = json_encode(array('mensaje' => 'No existe el parametro sector o Estado'));
+            $payload = json_encode(array('mensaje' => 'No estas habilitado para realizar la accion'));
             $response->getBody()->write($payload);
         }
-
-        return $response;
+        return $response->withHeader('Content-Type', 'application/json');
     }
 }

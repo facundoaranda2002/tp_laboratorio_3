@@ -20,14 +20,15 @@ require_once './controllers/MesaController.php';
 require_once './controllers/PedidoController.php';
 require_once './controllers/ProductoController.php';
 require_once './controllers/UsuarioController.php';
-require_once './middlewares/LoggerSocio.php';
-require_once './middlewares/LoggerCliente.php';
-require_once './middlewares/LoggerMozo.php';
+
+require_once './middlewares/AuthMiddleware.php';
+
+require_once './middlewares/LoginSocio.php';
+require_once './middlewares/LoginMozo.php';
+
 require_once './middlewares/ValidarModificarEstadoMesa.php';
-require_once './middlewares/ValidarAltaProducto.php';
 require_once './middlewares/ValidarModificarProducto.php';
-require_once './middlewares/ValidarModificarEstadoProducto.php';
-require_once './middlewares/ValidarBorrarProducto.php';
+require_once './middlewares/ValidarModificarEstadoYTiempoProducto.php';
 require_once './middlewares/ValidarModificarEstadoPedido.php';
 
 
@@ -49,30 +50,37 @@ $app->addErrorMiddleware(true, true, true);
 $app->addBodyParsingMiddleware();
 
 $app->group('/Mesa', function (RouteCollectorProxy $group) {
-    $group->get('[/]', \MesaController::class . ':TraerTodos')->add(new LoggerMozo());
-    $group->get('/{idMesa}', \MesaController::class . ':TraerUno')->add(new LoggerMozo());
-    $group->post('[/]', \MesaController::class . ':CargarUno')->add(new LoggerMozo());
+    $group->get('[/]', \MesaController::class . ':TraerTodos')->add(new LoginSocio());
+    $group->get('/TraerUno/{idMesa}', \MesaController::class . ':TraerUno')->add(new LoginSocio());
+    $group->get('/MasUsada', \MesaController::class . ':MesaMasUsada')->add(new LoginSocio());
+    $group->get('/MejorComentario', \MesaController::class . ':MesaMejoresComentarios')->add(new LoginSocio());
+    $group->get('/Estado', \MesaController::class . ':TraerTodosEstado')->add(new LoginSocio());
+    $group->post('[/]', \MesaController::class . ':CargarUno')->add(new LoginSocio());
     $group->put('/{idMesa}', \MesaController::class . ':ModificarUno')->add(new ValidarModificarEstadoMesa());
-    $group->delete('/{idMesa}', \MesaController::class . ':BorrarUno')->add(new LoggerSocio());
-  });
+    $group->delete('/{idMesa}', \MesaController::class . ':BorrarUno')->add(new LoginSocio());
+  })->add(new AuthMiddleware());
 
 $app->group('/Pedido', function (RouteCollectorProxy $group) {
   $group->get('[/]', \PedidoController::class . ':TraerTodos');
-  $group->get('/{clave}', \PedidoController::class . ':TraerUno');
+  $group->get('/EstadoPedido', \PedidoController::class . ':TraerTodosSegunEstado');
+  $group->get('/Tiempo', \PedidoController::class . ':TraerTodosTiempo');
+  $group->get('/TraerUno/{clavePedido}', \PedidoController::class . ':TraerUno');
   $group->post('[/]', \PedidoController::class . ':CargarUno');
+  $group->post('/SubirFoto', \PedidoController::class . ':SubirFoto');
   $group->put('[/]', \PedidoController::class . ':ModificarUno');
   $group->put('/ModificarEstado', \PedidoController::class . ':ModificarEstado')->add(new ValidarModificarEstadoPedido());
-  $group->delete('/{clave}', \PedidoController::class . ':BorrarUno');
-})->add(new LoggerMozo());
+  $group->delete('/{clavePedido}', \PedidoController::class . ':BorrarUno');
+})->add(new LoginMozo())->add(new AuthMiddleware());
 
 $app->group('/Producto', function (RouteCollectorProxy $group) {
-  $group->get('[/]', \ProductoController::class . ':TraerTodos')->add(new LoggerMozo());
-  $group->get('/{idProducto}', \ProductoController::class . ':TraerUno')->add(new LoggerMozo());
-  $group->post('[/]', \ProductoController::class . ':CargarUno')->add(new ValidarAltaProducto());
-  $group->put('[/]', \ProductoController::class . ':ModificarUno')->add(new ValidarModificarProducto());
-  $group->put('/ModificarEstado', \ProductoController::class . ':ModificarEstado')->add(new ValidarModificarEstadoProducto());
-  $group->delete('/{idProducto}', \ProductoController::class . ':BorrarUno')->add(new ValidarBorrarProducto());
-}); 
+  $group->get('[/]', \ProductoController::class . ':TraerTodos')->add(new LoginMozo());
+  $group->get('/TraerUno/{idProducto}', \ProductoController::class . ':TraerUno')->add(new LoginMozo());
+  $group->get('/MostrarEstadoSector', \ProductoController::class . ':TraerSegunEstadoYSector');
+  $group->post('[/]', \ProductoController::class . ':CargarUno')->add(new LoginMozo());
+  $group->put('[/]', \ProductoController::class . ':ModificarUno')->add(new ValidarModificarProducto())->add(new LoginMozo());
+  $group->put('/ModificarEstadoYTiempo', \ProductoController::class . ':ModificarEstadoYTiempo')->add(new ValidarModificarEstadoYTiempoProducto());
+  $group->delete('/{idProducto}', \ProductoController::class . ':BorrarUno')->add(new LoginMozo());
+})->add(new AuthMiddleware()); 
 
 $app->group('/Usuario', function (RouteCollectorProxy $group) {
   $group->get('[/]', \UsuarioController::class . ':TraerTodos');
@@ -80,7 +88,19 @@ $app->group('/Usuario', function (RouteCollectorProxy $group) {
   $group->post('[/]', \UsuarioController::class . ':CargarUno');
   $group->put('/{idUsuario}', \UsuarioController::class . ':ModificarUno');
   $group->delete('/{idUsuario}', \UsuarioController::class . ':BorrarUno');
-})->add(new LoggerSocio()); 
+})->add(new LoginSocio())->add(new AuthMiddleware()); 
+
+$app->group('/Usuario', function (RouteCollectorProxy $group) {
+  $group->post('/LoggerAdmin', \UsuarioController::class . ':LoggerAdmin');
+  $group->post('/Login', \UsuarioController::class . ':LoginUsuario');
+});
+
+$app->group('/Cliente', function (RouteCollectorProxy $group) {
+  $group->put('/ModificarCliente', \PedidoController::class . ':ModificarUnoCliente');
+  $group->get('/TraerUno', \PedidoController::class . ':TraerUnoCliente');
+});
+
+
 
 $app->run();
 

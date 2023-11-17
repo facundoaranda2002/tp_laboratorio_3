@@ -4,20 +4,20 @@ require_once './interfaces/IApiUsable.php';
 
 class ProductoController extends Producto implements IApiUsable
 {
-    public function CargarUno($request, $response, $args) // POST : estado tiempo tipo nombre
+    public function CargarUno($request, $response, $args) // POST : estado tiempo sector nombre
     {
         $parametros = $request->getParsedBody();
 
-        $estado = $parametros['estado'];
-        $tiempo = $parametros['tiempo'];
-        $tipo = $parametros['tipo'];
+        //$estado = $parametros['estado'];
+        //$tiempo = $parametros['tiempo'];
+        $sector = $parametros['sector'];
         $nombre = $parametros['nombre'];
         $clavePedido = $parametros['clavePedido'];
 
         $prod = new Producto();
-        $prod->estado = $estado;
-        $prod->tiempo = $tiempo;
-        $prod->tipo = $tipo;
+        $prod->estado = "pendiente";
+        $prod->tiempo = null;
+        $prod->sector = $sector;
         $prod->nombre = $nombre;
         $prod->clavePedido = $clavePedido;
 
@@ -52,6 +52,24 @@ class ProductoController extends Producto implements IApiUsable
           ->withHeader('Content-Type', 'application/json');
     }
 
+    public function TraerSegunEstadoYSector($request, $response, $args) // GET estado
+    {
+      $header = $request->getHeaderLine('Authorization');
+      $token = trim(explode("Bearer", $header)[1]);
+      $data = AutentificadorJWT::ObtenerData($token);
+
+      $parametrosParam = $request->getQueryParams();
+      $estado = $parametrosParam['estado'];
+
+      $lista = Producto::obtenerTodosSegunSuEstadoYSector($estado, $data->sector);
+
+      $payload = json_encode(array("listaProductos" => $lista));
+
+      $response->getBody()->write($payload);
+      return $response
+        ->withHeader('Content-Type', 'application/json');
+    }
+
     public function ModificarUno($request, $response, $args)
     {
         $parametros = $request->getParsedBody();
@@ -59,12 +77,13 @@ class ProductoController extends Producto implements IApiUsable
 
         $estado = $parametros['estado'];
         $tiempo = $parametros['tiempo'];
-        $tipo = $parametros['tipo'];
+        $sector = $parametros['sector'];
         $nombre = $parametros['nombre'];
         $clavePedido = $parametros['clavePedido'];
+        $idUsuario = $parametros['idUsuario'];
         $idProducto = $parametros['idProducto'];
 
-        Producto::modificarProducto($estado, $tiempo, $tipo, $nombre, $clavePedido, $idProducto);
+        Producto::modificarProducto($estado, $tiempo, $sector, $nombre, $clavePedido, $idUsuario, $idProducto);
 
         $payload = json_encode(array("mensaje" => "Producto Modificado con exito"));
 
@@ -73,16 +92,20 @@ class ProductoController extends Producto implements IApiUsable
           ->withHeader('Content-Type', 'application/json');
     }
 
-    public function ModificarEstado($request, $response, $args) // PUT  estado idProducto
+    public function ModificarEstadoYTiempo($request, $response, $args) // PUT  estado idProducto
     {
+        $header = $request->getHeaderLine('Authorization');
+        $token = trim(explode("Bearer", $header)[1]);
+        $data = AutentificadorJWT::ObtenerData($token);
         $parametros = $request->getParsedBody();
 
         $estado = $parametros['estado'];
+        $tiempo = $parametros['tiempo'];
         $idProducto = $parametros['idProducto'];
 
-        Producto::modificarEstadoDelProducto($estado, $idProducto);
+        Producto::modificarEstadoYTiempoDelProducto($estado, $tiempo, $data->idUsuario, $idProducto);
 
-        $payload = json_encode(array("mensaje" => "El estado del producto fue modificado con exito"));
+        $payload = json_encode(array("mensaje" => "El estado y el tiempo del producto fueron modificados con exito"));
 
         $response->getBody()->write($payload);
         return $response

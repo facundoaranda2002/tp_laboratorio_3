@@ -4,22 +4,24 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
 use Slim\Psr7\Response;
 
-class LoggerCliente
+class LoginSocio
 {
      public function __invoke(Request $request, RequestHandler $handler): Response
     {   
-        $parametros = $request->getQueryParams();
+        $header = $request->getHeaderLine('Authorization');
+        $token = trim(explode("Bearer", $header)[1]);
+        $data = AutentificadorJWT::ObtenerData($token);
 
-        $sector = $parametros['sector'];
-
-        if ($sector === 'cliente' || $sector === 'socio' || $sector === 'mozo') {
+        if($data->sector === "socio") 
+        {
             $response = $handler->handle($request);
-        } else {
+        } 
+        else 
+        {
             $response = new Response();
-            $payload = json_encode(array('mensaje' => 'No sos Cliente'));
+            $payload = json_encode(array('mensaje' => 'No sos Socio'));
             $response->getBody()->write($payload);
         }
-
-        return $response->withHeader('Content-Type', 'application/json');
+        return $response;
     }
 }
