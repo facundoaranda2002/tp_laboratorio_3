@@ -16,7 +16,7 @@ Este instructivo trata de dar una guia para realizar las acciones que se encuent
 - Referido a esto, para poder traer el mejor comentario de la mesa se evaluaran los pedidos en estado "finalizado" por lo cual tambien habra que cambiar a ese estado a los productos correspondientes al pedido.
 - El guardado del archivo csv se realiza en la carpeta csv, asi mismo se realizara la carga del csv hacia la base de datos desde los archivos que se encuentran en la misma carpeta previamente nombrada.
 
-¡¡¡ GRACIAS POR LEER c: !!!
+¡¡¡¡ GRACIAS POR LEER c: !!!!
 
 
 ## Correr localmente via PHP
