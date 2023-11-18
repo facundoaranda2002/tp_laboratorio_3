@@ -173,6 +173,7 @@ class MesaController extends Mesa implements IApiUsable
     {
       if(($archivo = fopen("csv/mesas.csv", "r")) !== false)
       {
+        Mesa::borrarMesas();
         while (($filaMesa = fgetcsv($archivo, 0, ',')) !== false) //esto seria como un while !feof
         {
           $nuevaMesa = new Mesa();

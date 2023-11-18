@@ -151,6 +151,7 @@ class ProductoController extends Producto implements IApiUsable
     {
       if(($archivo = fopen("csv/productos.csv", "r")) !== false)
       {
+        Producto::borrarProductos();
         while (($filaProducto = fgetcsv($archivo, 0, ',')) !== false) //esto seria como un while !feof
         {
           $nuevoProducto = new Producto();

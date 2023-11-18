@@ -125,6 +125,13 @@ class Pedido
         $consulta->execute();
     }
 
+    public static function borrarPedidos()
+    {
+        $objAccesoDatos = AccesoDatos::obtenerInstancia();
+        $consulta = $objAccesoDatos->prepararConsulta("TRUNCATE pedidos");
+        $consulta->execute();
+    }
+
     public static function modificarEstadoDelPedido($estado, $clavePedido)
     {
         $objAccesoDato = AccesoDatos::obtenerInstancia();

@@ -86,5 +86,12 @@ class Usuario
         $consulta->execute();
     }
 
+    public static function borrarUsuarios()
+    {
+        $objAccesoDatos = AccesoDatos::obtenerInstancia();
+        $consulta = $objAccesoDatos->prepararConsulta("TRUNCATE usuarios");
+        $consulta->execute();
+    }
+
 
 }

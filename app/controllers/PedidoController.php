@@ -259,6 +259,7 @@ class PedidoController extends Pedido implements IApiUsable
     {
       if(($archivo = fopen("csv/pedidos.csv", "r")) !== false)
       {
+        Pedido::borrarPedidos();
         while (($filaPedido = fgetcsv($archivo, 0, ',')) !== false) //esto seria como un while !feof
         {
           $nuevoPedido = new Pedido();

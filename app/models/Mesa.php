@@ -71,4 +71,11 @@ class Mesa
         $consulta->bindValue(':idMesa', $idMesa, PDO::PARAM_INT);
         $consulta->execute();
     }
+
+    public static function borrarMesas()
+    {
+        $objAccesoDatos = AccesoDatos::obtenerInstancia();
+        $consulta = $objAccesoDatos->prepararConsulta("TRUNCATE mesas");
+        $consulta->execute();
+    }
 }

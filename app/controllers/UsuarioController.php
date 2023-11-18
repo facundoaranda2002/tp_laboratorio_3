@@ -178,6 +178,7 @@ class UsuarioController extends Usuario implements IApiUsable
     {
       if(($archivo = fopen("csv/usuarios.csv", "r")) !== false)
       {
+        Usuario::borrarUsuarios();
         while (($filaUsuario = fgetcsv($archivo, 0, ',')) !== false) //esto seria como un while !feof
         {
           $nuevoUsuario = new Usuario();

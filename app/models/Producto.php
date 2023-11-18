@@ -102,6 +102,13 @@ class Producto
         $consulta->execute();
     }
 
+    public static function borrarProductos()
+    {
+        $objAccesoDatos = AccesoDatos::obtenerInstancia();
+        $consulta = $objAccesoDatos->prepararConsulta("TRUNCATE productos");
+        $consulta->execute();
+    }
+
     public static function modificarEstadoYTiempoDelProducto($estado, $tiempo, $idUsuario, $idProducto)
     {
         $objAccesoDato = AccesoDatos::obtenerInstancia();
