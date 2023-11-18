@@ -14,9 +14,9 @@ class PedidoController extends Pedido implements IApiUsable
         $estado = $parametros['estado'];
         $nombreCliente = $parametros['nombreCliente'];
         $precio = $parametros['precio'];
-        $puntuacion = $parametros['puntuacion'];
-        $comentarios = $parametros['comentarios'];
-        //$clavePedido = $parametros['clavePedido'];
+        $puntuacion = 0;
+        $comentarios = "Comentario Pendiente";
+        
 
         $pedido = new Pedido();
         $pedido->idMesa = $idMesa;
@@ -26,7 +26,7 @@ class PedidoController extends Pedido implements IApiUsable
         $pedido->precio = $precio;
         $pedido->puntuacion = $puntuacion;
         $pedido->comentarios = $comentarios;
-        //$pedido->clavePedido = $clavePedido;
+        
 
 
         $id = $pedido->crearPedido();
