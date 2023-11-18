@@ -145,4 +145,51 @@ class MesaController extends Mesa implements IApiUsable
     return $response
       ->withHeader('Content-Type', 'application/json');
   }
+
+  public function GuardarCSV($request, $response, $args)
+    {
+            
+      if($archivo = fopen("csv/mesas.csv", "w"))
+      {
+        $lista = Mesa::obtenerTodos();
+        foreach( $lista as $mesa )
+        {
+            fputcsv($archivo, [$mesa->idMesa, $mesa->estado]);
+        }
+        fclose($archivo);
+        $payload =  json_encode(array("mensaje" => "La lista de mesas se guardo correctamente"));
+      }
+      else
+      {
+        $payload =  json_encode(array("mensaje" => "No se pudo abrir el archivo de mesas"));
+      }
+
+      $response->getBody()->write($payload);
+      return $response
+        ->withHeader('Content-Type', 'application/json');
+    }
+
+    public function CargarCSV($request, $response, $args)
+    {
+      if(($archivo = fopen("csv/mesas.csv", "r")) !== false)
+      {
+        while (($filaMesa = fgetcsv($archivo, 0, ',')) !== false) //esto seria como un while !feof
+        {
+          $nuevaMesa = new Mesa();
+          $nuevaMesa->idMesa = $filaMesa[0];
+          $nuevaMesa->estado = $filaMesa[1];
+          $nuevaMesa->crearMesaCSV();
+        }
+        fclose($archivo);
+        $payload =  json_encode(array("mensaje" => "Las mesas se cargaron correctamente"));
+      }
+      else
+      {
+        $payload =  json_encode(array("mensaje" => "No se pudo leer el archivo de mesas"));
+      }
+                
+      $response->getBody()->write($payload);
+      return $response
+        ->withHeader('Content-Type', 'application/json');
+    }
 }

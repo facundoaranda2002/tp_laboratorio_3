@@ -36,6 +36,28 @@ class Pedido
 
     }
 
+    public function crearPedidoCSV()
+    {
+        $objAccesoDatos = AccesoDatos::obtenerInstancia();
+
+        $consulta = $objAccesoDatos->prepararConsulta("INSERT INTO pedidos (idMesa, estado, nombreCliente, precio, puntuacion, comentarios, clavePedido, idPedido) VALUES (:idMesa, :estado, :nombreCliente, :precio, :puntuacion, :comentarios, :clavePedido, :idPedido)");
+        
+        $clavePedido = $this->generarCodigoAlfanumericoAleatorio();
+
+        $consulta->bindValue(':idMesa', $this->idMesa, PDO::PARAM_INT);
+        $consulta->bindValue(':estado', $this->estado, PDO::PARAM_STR);
+        $consulta->bindValue(':nombreCliente', $this->nombreCliente, PDO::PARAM_STR);
+        $consulta->bindValue(':precio', $this->precio, PDO::PARAM_INT);
+        $consulta->bindValue(':puntuacion', $this->puntuacion, PDO::PARAM_INT); 
+        $consulta->bindValue(':comentarios', $this->comentarios, PDO::PARAM_STR);
+        $consulta->bindValue(':clavePedido', $this->clavePedido, PDO::PARAM_STR);
+        $consulta->bindValue(':idPedido', $this->idPedido, PDO::PARAM_INT);
+        $consulta->execute();
+
+        return $objAccesoDatos->obtenerUltimoId();
+
+    }
+
     public static function obtenerTodos()
     {
         $objAccesoDatos = AccesoDatos::obtenerInstancia();

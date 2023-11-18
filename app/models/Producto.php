@@ -26,6 +26,22 @@ class Producto
         return $objAccesoDatos->obtenerUltimoId();
     }
 
+    public function crearProductoCSV()
+    {
+        $objAccesoDatos = AccesoDatos::obtenerInstancia();
+        $consulta = $objAccesoDatos->prepararConsulta("INSERT INTO productos (estado, tiempo, sector, nombre, idUsuario, clavePedido, idProducto) VALUES (:estado, :tiempo, :sector, :nombre, :idUsuario, :clavePedido, :idProducto)");
+        $consulta->bindValue(':estado', $this->estado, PDO::PARAM_STR);
+        $consulta->bindValue(':tiempo', $this->tiempo, PDO::PARAM_INT); // en segundos
+        $consulta->bindValue(':sector', $this->sector, PDO::PARAM_STR);
+        $consulta->bindValue(':nombre', $this->nombre, PDO::PARAM_STR);
+        $consulta->bindValue(':idUsuario', $this->idUsuario, PDO::PARAM_INT);
+        $consulta->bindValue(':clavePedido', $this->clavePedido, PDO::PARAM_STR);
+        $consulta->bindValue(':idProducto', $this->idProducto, PDO::PARAM_INT);
+        $consulta->execute();
+
+        return $objAccesoDatos->obtenerUltimoId();
+    }
+
     public static function obtenerTodos()
     {
         $objAccesoDatos = AccesoDatos::obtenerInstancia();

@@ -123,4 +123,56 @@ class ProductoController extends Producto implements IApiUsable
         return $response
           ->withHeader('Content-Type', 'application/json');
     }
+
+    public function GuardarCSV($request, $response, $args)
+    {
+            
+      if($archivo = fopen("csv/productos.csv", "w"))
+      {
+        $lista = Producto::obtenerTodos();
+        foreach( $lista as $producto )
+        {
+            fputcsv($archivo, [$producto->estado, $producto->tiempo, $producto->sector, $producto->nombre, $producto->clavePedido, $producto->idUsuario, $producto->idProducto]);
+        }
+        fclose($archivo);
+        $payload =  json_encode(array("mensaje" => "La lista de productos se guardo correctamente"));
+      }
+      else
+      {
+        $payload =  json_encode(array("mensaje" => "No se pudo abrir el archivo de productos"));
+      }
+
+      $response->getBody()->write($payload);
+      return $response
+        ->withHeader('Content-Type', 'application/json');
+    }
+
+    public function CargarCSV($request, $response, $args)
+    {
+      if(($archivo = fopen("csv/productos.csv", "r")) !== false)
+      {
+        while (($filaProducto = fgetcsv($archivo, 0, ',')) !== false) //esto seria como un while !feof
+        {
+          $nuevoProducto = new Producto();
+          $nuevoProducto->estado = $filaProducto[0];
+          $nuevoProducto->tiempo = $filaProducto[1];
+          $nuevoProducto->sector = $filaProducto[2];
+          $nuevoProducto->nombre = $filaProducto[3];
+          $nuevoProducto->clavePedido = $filaProducto[4];
+          $nuevoProducto->idUsuario = $filaProducto[5];
+          $nuevoProducto->idProducto = $filaProducto[6];
+          $nuevoProducto->crearProductoCSV();
+        }
+        fclose($archivo);
+        $payload  =  json_encode(array("mensaje" => "Los productos se cargaron correctamente"));
+      }
+      else
+      {
+        $payload =  json_encode(array("mensaje" => "No se pudo leer el archivo de productos"));
+      }
+                
+      $response->getBody()->write($payload);
+      return $response
+        ->withHeader('Content-Type', 'application/json');
+    }
 }

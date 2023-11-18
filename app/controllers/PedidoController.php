@@ -232,4 +232,57 @@ class PedidoController extends Pedido implements IApiUsable
           ->withHeader('Content-Type', 'application/json');
     }
 
+    public function GuardarCSV($request, $response, $args)
+    {
+            
+      if($archivo = fopen("csv/pedidos.csv", "w"))
+      {
+        $lista = Pedido::obtenerTodos();
+        foreach( $lista as $pedido )
+        {
+            fputcsv($archivo, [$pedido->idMesa, $pedido->estado, $pedido->nombreCliente, $pedido->precio, $pedido->puntuacion, $pedido->comentarios, $pedido->clavePedido, $pedido->idPedido]);
+        }
+        fclose($archivo);
+        $payload =  json_encode(array("mensaje" => "La lista de pedidos se guardo correctamente"));
+      }
+      else
+      {
+        $payload =  json_encode(array("mensaje" => "No se pudo abrir el archivo de pedidos"));
+      }
+
+      $response->getBody()->write($payload);
+      return $response
+        ->withHeader('Content-Type', 'application/json');
+    }
+
+    public function CargarCSV($request, $response, $args)
+    {
+      if(($archivo = fopen("csv/pedidos.csv", "r")) !== false)
+      {
+        while (($filaPedido = fgetcsv($archivo, 0, ',')) !== false) //esto seria como un while !feof
+        {
+          $nuevoPedido = new Pedido();
+          $nuevoPedido->idMesa = $filaPedido[0];
+          $nuevoPedido->estado = $filaPedido[1];
+          $nuevoPedido->nombreCliente = $filaPedido[2];
+          $nuevoPedido->precio = $filaPedido[3];
+          $nuevoPedido->puntuacion = $filaPedido[4];
+          $nuevoPedido->comentarios = $filaPedido[5];
+          $nuevoPedido->clavePedido = $filaPedido[6];
+          $nuevoPedido->idPedido = $filaPedido[7];
+          $nuevoPedido->crearPedidoCSV();
+        }
+        fclose($archivo);
+        $payload  =  json_encode(array("mensaje" => "Los pedidos se cargaron correctamente"));
+      }
+      else
+      {
+        $payload =  json_encode(array("mensaje" => "No se pudo leer el archivo de pedidos"));
+      }
+                
+      $response->getBody()->write($payload);
+      return $response
+        ->withHeader('Content-Type', 'application/json');
+    }
+
 }

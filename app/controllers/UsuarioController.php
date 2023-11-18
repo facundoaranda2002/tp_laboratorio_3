@@ -151,4 +151,55 @@ class UsuarioController extends Usuario implements IApiUsable
       return $response->withHeader('Content-Type', 'application/json');
     }
 
+    public function GuardarCSV($request, $response, $args)
+    {
+            
+      if($archivo = fopen("csv/usuarios.csv", "w"))
+      {
+        $lista = Usuario::obtenerTodos();
+        foreach( $lista as $usuario )
+        {
+            fputcsv($archivo, [$usuario->sueldo, $usuario->sector, $usuario->fechaIngreso, $usuario->nombreUsuario, $usuario->password, $usuario->idUsuario]);
+        }
+        fclose($archivo);
+        $payload =  json_encode(array("mensaje" => "La lista de usuarios se guardo correctamente"));
+      }
+      else
+      {
+        $payload =  json_encode(array("mensaje" => "No se pudo abrir el archivo de usuarios"));
+      }
+
+      $response->getBody()->write($payload);
+      return $response
+        ->withHeader('Content-Type', 'application/json');
+    }
+
+    public function CargarCSV($request, $response, $args)
+    {
+      if(($archivo = fopen("csv/usuarios.csv", "r")) !== false)
+      {
+        while (($filaUsuario = fgetcsv($archivo, 0, ',')) !== false) //esto seria como un while !feof
+        {
+          $nuevoUsuario = new Usuario();
+          $nuevoUsuario->sueldo = $filaUsuario[0];
+          $nuevoUsuario->sector = $filaUsuario[1];
+          $nuevoUsuario->fechaIngreso = $filaUsuario[2];
+          $nuevoUsuario->nombreUsuario = $filaUsuario[3];
+          $nuevoUsuario->password = $filaUsuario[4];
+          $nuevoUsuario->idUsuario = $filaUsuario[5];
+          $nuevoUsuario->crearUsuarioCSV();
+        }
+        fclose($archivo);
+        $payload  =  json_encode(array("mensaje" => "Los usuarios se cargaron correctamente"));
+      }
+      else
+      {
+        $payload =  json_encode(array("mensaje" => "No se pudo leer el archivo de usuarios"));
+      }
+                
+      $response->getBody()->write($payload);
+      return $response
+        ->withHeader('Content-Type', 'application/json');
+    }
+
 }
